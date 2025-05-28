@@ -42,10 +42,10 @@ def reset_game():
     player.position = (12, 4, 12) # позиція гравція за замовченням
     invoke(hide_popup, delay=4) # функція заклик, спилваюче вікно зникає через 4 секунди
 
-def toggle_player_visibility():
+def toggle_player_visibility(): 
     global player_enabled
     player_enabled = not player_enabled
-    player.enabled = player_enabled
+    player.enabled = player_enabled # перемикає видиміть гравця "відключає його від руки"
 
 def update(): # функція що виконується автоматично на кожному кадрі для реалізації інтерактивності
     global block_pick
@@ -143,7 +143,7 @@ class TableUI(Entity):
                     position=(-0.43 + i * (cell_size + spacing), -0.42)
                 )
             else:
-                cell = NonInteractiveButton(
+                cell = NonInteractiveButton( # порожні слоти (комірки), що не знадобилися
                     parent=self,
                     model='quad',
                     border=0.02,
@@ -159,7 +159,7 @@ class TableUI(Entity):
                 origin=(-0.5, 0),
                 background=True
             )
-            self.cells.append(cell)
+            self.cells.append(cell) # зберігаємо посилання на всі кнопки
 
 class Sky(Entity):
     def __init__(self):
@@ -168,7 +168,7 @@ class Sky(Entity):
             model='sphere',
             texture=sky_texture,
             scale=150,
-            double_sided=True
+            double_sided=True # вмикає видимість сфери зсередини світу
         )
 
 class Hand(Entity):
@@ -182,16 +182,16 @@ class Hand(Entity):
             position=Vec2(0.4, -0.6)
         )
 
-    def active(self):
+    def active(self): # активація руки гравця
         self.position = Vec2(0.3, -0.5)
 
-    def passive(self):
+    def passive(self): # повернення руки гравця
         self.position = Vec2(0.4, -0.6)
 
-# Создание мира
+# Створення світу
 for z in range(world_size):
     for x in range(world_size):
-        for y in range(world_depth):
+        for y in range(world_depth): 
             if y == 4:
                 voxel = Voxel(position=(x, y, z), texture=grass_texture)
                 original_world.append((x, y, z, grass_texture))
@@ -202,8 +202,8 @@ for z in range(world_size):
                 voxel = Voxel(position=(x, y, z), texture=dirt_texture)
                 original_world.append((x, y, z, dirt_texture))
 
-player = FirstPersonController(position=(12, 15, 12))
-table = TableUI()
+player = FirstPersonController(position=(12, 15, 12)) # створення гравця з видом від першої особи
+table = TableUI() 
 sky = Sky()
 hand = Hand()
 window.fullscreen = True
