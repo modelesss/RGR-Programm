@@ -93,7 +93,7 @@ class Voxel(Button): # кожен блок (voxel) успадковується 
     def on_mouse_exit(self): # повернення кольору
         self.color = self.default_color
 
-    def input(self, key): # обробка натискань клавіш або подій миші, коли вони стосуються конкретного блоку
+    def input(self, key): # обробка натискань клавіш
         if key == 'escape':
             application.quit()
 
