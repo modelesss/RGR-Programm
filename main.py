@@ -6,7 +6,7 @@ app = Ursina()
 player_enabled = True
 p_key_held = False
 original_world = []
-world_size = 20  # x and y
+world_size = 20  # x та y
 world_depth = 5  # z
 
 grass_texture = load_texture('assets/grass_block2.png')
@@ -23,42 +23,42 @@ window.fps_counter.enabled = True
 window.exit_button.visible = True
 
 def show_popup(text):
-    global popup_text
+    global popup_text # дозволяє використати змінну поза функцією
     popup_text = Text(text=text, origin=(0, 0), scale=2, color=color.black)
     popup_text.x = -popup_text.width / 2
     popup_text.y = -popup_text.height / 2
 
 def hide_popup():
     global popup_text
-    destroy(popup_text)
+    destroy(popup_text) # видаляє текст 
 
 def reset_game():
     show_popup("Світ перезавантажено")
     for voxel in scene.entities:
-        if isinstance(voxel, Voxel):
+        if isinstance(voxel, Voxel): # перевіряє чи е об'єкт екземпляром для вказаного класу
             voxel.disable()
-    for x, y, z, texture in original_world:
+    for x, y, z, texture in original_world: # список усіх блоків, які мають бути в початковому світі
         Voxel(position=(x, y, z), texture=texture)
-    player.position = (12, 4, 12)
-    invoke(hide_popup, delay=4)
+    player.position = (12, 4, 12) # позиція гравція за замовченням
+    invoke(hide_popup, delay=4) # функція заклик, спилваюче вікно зникає через 4 секунди
 
 def toggle_player_visibility():
     global player_enabled
     player_enabled = not player_enabled
     player.enabled = player_enabled
 
-def update():
+def update(): # функція що виконується автоматично на кожному кадрі для реалізації інтерактивності
     global block_pick
     global p_key_held
 
     if player.y < -10:
-        reset_game()
+        reset_game() # перезавантаження світу якщо гравець впав нижче ніж на 10 боків вниз
 
     if held_keys['r']:
         reset_game()
 
-    if held_keys['p'] and not p_key_held:
-        toggle_player_visibility()
+    if held_keys['p'] and not p_key_held: # запобігання багаторазовому спрацюванню 
+        toggle_player_visibility() # гравець зникає та з'являється
         p_key_held = True
     elif not held_keys['p'] and p_key_held:
         p_key_held = False
@@ -74,30 +74,30 @@ def update():
     if held_keys['4']: block_pick = 4
     if held_keys['5']: block_pick = 5
 
-class Voxel(Button):
-    def __init__(self, position=(0, 0, 0), texture=grass_texture):
+class Voxel(Button): # кожен блок (voxel) успадковується і поводить себе як кнопка
+    def __init__(self, position=(0, 0, 0), texture=grass_texture): # метод, що викликається під час створення нового об'єкту
         super().__init__(
-            parent=scene,
+            parent=scene, # додавання блоку до сцени
             position=position,
             model='assets/block',
-            origin_y=0.5,
+            origin_y=0.5, # центр об'єкта припіднятий вгору, шоб стояв на землі
             texture=texture,
             color=color.color(0, 0, 1),
             scale=0.5
         )
         self.default_color = self.color
 
-    def on_mouse_enter(self):
+    def on_mouse_enter(self): # зміна кольору блоку при наведені мишкою
         self.color = color.color(19, 0.03, 0.7)
 
-    def on_mouse_exit(self):
+    def on_mouse_exit(self): # повернення кольору
         self.color = self.default_color
 
-    def input(self, key):
+    def input(self, key): # обробка натискань клавіш або подій миші, коли вони стосуються конкретного блоку
         if key == 'escape':
             application.quit()
 
-        if self.hovered:
+        if self.hovered: # виконання тільки, якщо миша наведена на блок
             if key == 'right mouse down':
                 punch_sound.play()
                 pos = self.position + mouse.normal
@@ -111,15 +111,15 @@ class Voxel(Button):
                 punch_sound.play()
                 destroy(self)
 
-class NonInteractiveButton(Button):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.highlight_color = self.color
-        self.collision = False
+class NonInteractiveButton(Button): # клас, що успадковує властивості кнопки. виглядає як кнопка, але з мишею не взаємодіє
+    def __init__(self, **kwargs): # конструктор класу. Все, що передадуть (color) — автоматично піде в Button
+        super().__init__(**kwargs) # створення звичайної кнопки
+        self.highlight_color = self.color # явно зберігаємо колір, щоб уникнути зміни підсвітки
+        self.collision = False # кнопка не реагує на натискання чи наведенян 
 
 class TableUI(Entity):
     def __init__(self):
-        super().__init__(parent=camera.ui)
+        super().__init__(parent=camera.ui) # TableUI стає частиною 2D UI, який видно поверх 3D-сцени
 
         cell_size = 0.08
         spacing = 0.02
@@ -129,9 +129,9 @@ class TableUI(Entity):
             "assets/plank3d.png"
         ]
 
-        self.cells = []
+        self.cells = [] # створення кнопок, до яких в подальшому можна звертатися
         for i in range(9):
-            if i <= 4:
+            if i <= 4: # створення текстур за кнопками від 0 до 4 (у комірках)
                 cell = NonInteractiveButton(
                     parent=self,
                     model='quad',
