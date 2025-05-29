@@ -100,7 +100,7 @@ class Voxel(Button): # кожен блок (voxel) успадковується 
         if self.hovered: # виконання тільки, якщо миша наведена на блок
             if key == 'right mouse down':
                 punch_sound.play()
-                pos = self.position + mouse.normal
+                pos = self.position + mouse.normal # обчислюється позиція нового блоку
                 if block_pick == 1: Voxel(position=pos, texture=grass_texture)
                 if block_pick == 2: Voxel(position=pos, texture=stone_texture)
                 if block_pick == 3: Voxel(position=pos, texture=brick_texture)
